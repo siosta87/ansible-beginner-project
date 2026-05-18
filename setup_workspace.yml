@@ -1,0 +1,15 @@
+---
+- name: Setup My IT Lab Directories
+  hosts: local
+  gather_facts: yes
+
+  tasks:
+    - name: Create a new project directory
+      file:
+        path: "{{ ansible_facts['HOME'] }}/it_lab_docs"
+        state: directory
+
+    - name: Create a blank network baseline text file
+      file:
+        path: "{{ ansible_facts['HOME'] }}/it_lab_docs/network_log.txt"
+        state: touch
