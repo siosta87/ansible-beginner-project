@@ -1,33 +1,53 @@
 # Ansible Beginner Project
 
-A beginner-level Ansible project focused on automating IT lab setup on a local Linux machine (WSL/Ubuntu).
+A local Linux or WSL/Ubuntu lab that creates an IT documentation workspace with Ansible.
 
-## What This Project Does
+## Included files
 
-This playbook automates the creation of a basic IT lab directory structure and a blank network baseline log file on localhost.
+- [inventory.ini](inventory.ini): local target inventory
+- [setup_workspace.yml](setup_workspace.yml): creates the workspace and baseline file
 
-## Files
+## Requirements
 
-- `inventory.ini` — Defines localhost as the target host using a local connection
-- `setup_workspace.yml` — Ansible playbook that creates the `it_lab_docs/` directory and a blank `network_log.txt` file inside it
+- Linux or WSL/Ubuntu
+- Python and Ansible installed in that environment
+- A writable home directory for the user running the playbook
 
-## How to Run
+## Run
+
+Open a terminal in the repository folder, then check the inventory and playbook:
+
+```bash
+ansible-inventory -i inventory.ini --list
+ansible-playbook -i inventory.ini setup_workspace.yml --syntax-check
+ansible-playbook -i inventory.ini setup_workspace.yml --check --diff
+```
+
+Apply the playbook:
 
 ```bash
 ansible-playbook -i inventory.ini setup_workspace.yml
 ```
 
-## What Gets Created
+## Expected result
 
+- ~/it_lab_docs exists as a directory.
+- ~/it_lab_docs/network_log.txt exists.
+- Existing contents of network_log.txt are preserved.
+
+Verify:
+
+```bash
+ls -ld ~/it_lab_docs
+ls -l ~/it_lab_docs/network_log.txt
 ```
-~/it_lab_docs/
-└── network_log.txt
-```
 
-## Skills Practiced
+## Implementation notes
 
-- Writing an Ansible inventory file
-- Creating a basic playbook with tasks
-- Using the `file` module to create directories and files
-- Running a playbook locally with `ansible_connection=local`
-- Debugging and fixing YAML syntax errors
+The playbook uses the gathered environment fact ansible_facts['env']['HOME'] to find the target user's home directory. The copy task creates an empty baseline file only when it is missing.
+
+The cleanup corrected the original HOME lookup and removed touch-based timestamp changes on every run. A fresh Ansible execution and repeat-run check are still needed in the lab environment. No execution output is included in this repository.
+
+## Skills practiced
+
+Ansible inventory, YAML playbooks, gathered facts, directory and file management, and repeatable local configuration.
