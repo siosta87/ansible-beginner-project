@@ -1,15 +1,17 @@
 ---
-- name: Setup My IT Lab Directories
+- name: Set up IT lab workspace
   hosts: local
-  gather_facts: yes
-
+  gather_facts: true
   tasks:
-    - name: Create a new project directory
-      file:
-        path: "{{ ansible_facts['HOME'] }}/it_lab_docs"
+    - name: Create the project directory
+      ansible.builtin.file:
+        path: "{{ ansible_facts['env']['HOME'] }}/it_lab_docs"
         state: directory
+        mode: '0755'
 
-    - name: Create a blank network baseline text file
-      file:
-        path: "{{ ansible_facts['HOME'] }}/it_lab_docs/network_log.txt"
-        state: touch
+    - name: Create the network baseline file without overwriting existing content
+      ansible.builtin.copy:
+        dest: "{{ ansible_facts['env']['HOME'] }}/it_lab_docs/network_log.txt"
+        content: ""
+        force: false
+        mode: '0644'
